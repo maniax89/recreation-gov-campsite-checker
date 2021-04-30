@@ -259,7 +259,13 @@ def output_json_output(parks):
     return availabilities
 
 
-def main(parks, json_output=False):
+def main(parks, json_output=False, get_park_names=False):
+    if get_park_names:
+        parks_dict = {}
+        for park_id in parks:
+            parks_dict[park_id] = get_name_of_park(park_id)
+        print(json.dumps(parks_dict))
+        return parks_dict
     if json_output:
         return output_json_output(parks)
     else:
@@ -316,6 +322,16 @@ if __name__ == "__main__":
             "avaiable dates and which sites are available."
         ),
     )
+    parser.add_argument(
+        "--get-park-names",
+        action="store_true",
+        help=(
+            "This make the script output JSON instead of human readable "
+            "output. Note, this is incompatible with the twitter notifier. "
+            "This output includes more precise information, such as the exact "
+            "avaiable dates and which sites are available."
+        ),
+    )
     parks_group = parser.add_mutually_exclusive_group(required=True)
     parks_group.add_argument(
         "--parks", dest="parks", metavar="park", nargs="+", help="Park ID(s)", type=int
@@ -335,7 +351,7 @@ if __name__ == "__main__":
     parks = args.parks or [p.strip() for p in sys.stdin]
 
     try:
-        code = 0 if main(parks, json_output=args.json_output) else 1
+        code = 0 if main(parks, json_output=args.json_output, get_park_names=args.get_park_names) else 1
         sys.exit(code)
     except Exception:
         print("Something went wrong")
