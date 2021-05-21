@@ -182,6 +182,15 @@ def consecutive_nights(available, nights):
         # Skip ranges that are too short.
         if len(r) < nights:
             continue
+        if len(r) == 1 and nights == 1:
+            start_nice = format_date(
+                datetime.fromordinal(r[0]), format_string=INPUT_DATE_FORMAT
+            )
+            end_nice = format_date(
+                datetime.fromordinal(r[0]),
+                format_string=INPUT_DATE_FORMAT,
+            )
+            long_enough_consecutive_ranges.append((start_nice, end_nice))
         for start_index in range(0, len(r) - nights):
             start_nice = format_date(
                 datetime.fromordinal(r[start_index]), format_string=INPUT_DATE_FORMAT
